@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en" data-framework="knockoutjs">
 <head>
   <meta charset="utf-8">
@@ -8,38 +8,48 @@
     href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
     integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
     crossorigin="anonymous"> -->
-
   <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.9/semantic.min.css"/>
   <link rel="stylesheet" type="text/css" href="static/index.css"/>
 
 </head>
 <body class="pushable">
-
-  <div class="ui left vertical inverted labeled icon sidebar menu ">
-
+  <div class="ui left vertical inverted labeled icon sidebar menu " id="sidebar">
     <a class="item">
-      <i class="home icon"></i>
-      Home
+      <p>Bart Locations</p>
     </a>
-    <a class="item">
-      <i class="block layout icon"></i>
-      Topics
-    </a>
-    <a class="item">
-      <i class="smile icon"></i>
-      Friends
-    </a>
+    <div class="item">
+    <div class="ui action input">
+      <input type="text" placeholder="Station Location">
+      <button class="ui teal right labeled icon button">
+        <i class="options icon"></i>
+        Filter
+      </button>
+      </div>
+    </div>
+    <div class="item">
+      <div class="menu">
+        <a class="item">Topics</a>
+        <a class="item">Places</a>
+        <a class="item">Maces</a>
+    </div>
+    </div>
   </div>
-  <div class="ui black big launch right attached fixed button" id="launch-btn">
-    <i class="chevron right icon"></i>
-
+  <div class="ui black big launch right attached fixed button"
+    id="launch-btn" data-bind="click: sidebarToggle">
+    <i class="chevron icon" data-bind="css: arrowDirection"></i>
   </div>
 
-  <div class="pusher">
+  <div class="pusher" id="map">
     the shit is goingon
   </div>
 
+
+
+  <script async defer
+    src=
+        "https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyAXeLDsV2v8YP_G_Kos4erYBBNeFMPyX4I&v=3&callback=initMap">
+  </script>
 
 
 
