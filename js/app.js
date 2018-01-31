@@ -49,13 +49,6 @@ var initLocations = [
     }
   },
   {
-    title: "House Park Bar-B-Que",
-    location: {
-      lat: 30.27678680000001,
-      lng: -97.750453
-    }
-  },
-  {
     title: "Valentina's Tex Mex BBQ",
     location: {
       lat: 30.1530261,
@@ -81,13 +74,6 @@ var initLocations = [
     location: {
       lat: 30.37111770000001,
       lng: -97.72469130000002
-    }
-  },
-  {
-    title: "Brown's BBQ",
-    location: {
-      lat: 30.2494355,
-      lng: -97.76689909999999
     }
   },
   {
@@ -141,16 +127,8 @@ var initLocations = [
   }
 ];
 
-var locations = [
-          {title: 'Park Ave Penthouse', location: {lat: 40.7713024, lng: -73.9632393}},
-          {title: 'Chelsea Loft', location: {lat: 40.7444883, lng: -73.9949465}},
-          {title: 'Union Square Open Floor Plan', location: {lat: 40.7347062, lng: -73.9895759}},
-          {title: 'East Village Hip Studio', location: {lat: 40.7281777, lng: -73.984377}},
-          {title: 'TriBeCa Artsy Bachelor Pad', location: {lat: 40.7195264, lng: -74.0089934}},
-          {title: 'Chinatown Homey Space', location: {lat: 40.7180628, lng: -73.9961237}}
-        ];
 
-var sidebarInitial = function(){$("#sidebar")
+var initiateSidebar = function(){$("#sidebar")
   .sidebar({
     dimPage: false,
     closable: false,
@@ -159,105 +137,376 @@ var sidebarInitial = function(){$("#sidebar")
 }
 
 
-var map;
-function initMap() {
-  map = new google.maps.Map(document.getElementById('map'), {
-    center: {lat: 30.275, lng: -97.732},
-    // center : {lat: 40.7281777, lng: -73.984377},
-    zoom: 11
-  });
-  // var markers = new Markers(initLocations);
-  var viewModel = new ViewModel();
-  ko.applyBindings(viewModel);
-}
-
-  ko.bindingHandlers.mapp = {
-    init: function (element, valueAccessor, allBindingsAccessor, viewModel) {
-      var locationArr = allBindingsAccessor().location();
-      var markers = []
-      //
-      // locationArr.forEach((location, idx) => {
-      //   var marker = new google.maps.Marker({
-      //     map: allBindingsAccessor().mapp,
-      //     position: location.location,
-      //     animation: google.maps.Animation.DROP,
-      //     title: location.title
-      //   });
-      //   markers.push(marker)
-      // })
-
-      viewModel.markers = markers;
-    },
-    update: function (element, valueAccessor, allBindingsAccessor, viewModel) {
-      // var position = allBindingsAccessor().location();
-      // viewModel._mapMarker.setPosition(position);
-      var oldMarkers = viewModel.markers
-      console.log(element)
-      hideMarkers(oldMarkers);
-
-
-      var locationArr = allBindingsAccessor().location();
-      var markers = []
-      locationArr.forEach((location, idx) => {
-        var marker = new google.maps.Marker({
-          map: allBindingsAccessor().mapp,
-          position: location.location,
-          animation: google.maps.Animation.DROP,
-          title: location.title,
-          id: idx
-        });
-        markers.push(marker)
-      })
-      viewModel.markers = markers;
-    }
-  }
-
-function hideMarkers(markers) {
-  for (var i = 0; i < markers.length; i++) {
-    markers[i].setMap(null);
-  }
-}
-
-
-
-var Markers = function(data) {
-  var markers = [];
-  data.forEach((location, idx) => {
-    var marker = new google.maps.Marker({
-      position: location.location,
-      title: location.title,
-      animation: google.maps.Animation.DROP,
-      id: idx,
-      map: map
+function getPlacesDetails(marker, detailFunc, infoWindow) {
+  var innerHTML = '';
+  // if the place already has details, dont make the network call
+  // previous placeDetails data
+  if(!marker.placeDetails){
+    $.ajax({
+      type: "GET",
+      dataType: "jsonp",
+      cache: false,
+      url: 'https://api.foursquare.com/v2/venues/' + marker.idFourSqr + '?'
+      + '&client_id=55GRDDIO4M4MSANZAEVW3YOIBGYHHIO5KLNVJALFQ5MOFR4G&client'
+      + '_secret=IGWG0OXVMSZGVULL12DSBCKXA50FQV5PDO2NASVMTFBLW54B&v=20180128',
+      success: function(result, status){
+        if(result.meta.errorDetail){
+          console.log(result.meta.errorDetail)
+          infoWindow.setContent('OOPS!! No Info Available');
+          infoWindow.open(map, marker);
+          return
+        }
+        var venue = result.response.venue;
+        if(result.meta.code == 200){
+          if(!infoWindow){
+            detailFunc(venue);
+            return;
+          }
+          infoWindow.setContent('');
+          infoWindow.marker = marker;
+          innerHTML = '<div>';
+          innerHTML += '<strong>' + marker.title + '</strong>';
+          if (venue.location.formattedAddress) {
+            innerHTML += '<br><br><p>'
+            + venue.location.formattedAddress.join(',<br>');
+          }
+          if (venue.contact.formattedPhone) {
+            innerHTML += '<br>'
+            + venue.contact.formattedPhone;
+          }
+          if (venue.rating) {
+            innerHTML += '<br><br>Rating: '
+            + venue.rating;
+          }
+          if (venue.price) {
+            innerHTML += ', Price: '
+            + venue.price.currency;
+          }
+          if (venue.bestPhoto) {
+            innerHTML += '<br><img src="'
+            + venue.bestPhoto.prefix
+            + '200x100' + venue.bestPhoto.suffix +'">';
+          }
+          innerHTML += '</p><button class="ui orange button" id="detail-btn" data-bind="click: sidebarToggle">ss</button></div>'
+          innerHTML += '</p></div>'
+          infoWindow.setContent(innerHTML);
+          infoWindow.open(map, marker);
+          detailFunc(venue);
+        }
+      }
     });
+  } else {
+    if(!infoWindow) return;
+
+    var venue = marker.placeDetails;
+      infoWindow.marker = marker;
+      innerHTML = '<div>';
+      innerHTML += '<strong>' + marker.title + '</strong>';
+      if (venue.location.formattedAddress) {
+        innerHTML += '<br><br><p>'
+        + venue.location.formattedAddress.join(',<br>');
+      }
+      if (venue.contact.formattedPhone) {
+        innerHTML += '<br>'
+        + venue.contact.formattedPhone;
+      }
+      if (venue.rating) {
+        innerHTML += '<br><br>Rating: '
+        + venue.rating;
+      }
+      if (venue.price) {
+        innerHTML += ', Price: '
+        + venue.price.currency;
+      }
+      if (venue.bestPhoto) {
+        innerHTML += '<br><img src="'
+        + venue.bestPhoto.prefix
+        + '200x100' + venue.bestPhoto.suffix +'">';
+      }
+      innerHTML += '</p><button class="ui orange button" id="detail-btn" data-bind="click: sidebarToggle">ss</button></div>'
+      innerHTML += '</p></div>'
+      infoWindow.setContent(innerHTML);
+      infoWindow.open(map, marker);
+  }
+}
+
+function animateMarker(marker) {
+  marker.setAnimation(google.maps.Animation.BOUNCE);
+  setTimeout(function () {
+    marker.setAnimation(null);
+  }, 1420);
+}
+
+function makeMarkerIcon(marker, iconType) {
+  var url = '';
+  switch(iconType) {
+    case 'black':
+    url = 'static/chickenBlack.png'
+    break;
+    case 'blue':
+    url = 'static/chickenBlue.png'
+    break;
+    case 'default':
+    url = 'static/chickenDefault.png'
+    break;
+    default:
+    url = 'static/chickenDefault.png'
+  }
+  var icon = {
+    url: url,
+    size: new google.maps.Size(20, 32),
+    origin: new google.maps.Point(0, 0),
+    anchor: new google.maps.Point(0, 32),
+    scale: 10
+  }
+  marker.setIcon(icon);
+}
+
+function searchIdFourSqr(data, callback) {
+  $.ajax({
+    type: "GET",
+    dataType: "jsonp",
+    cache: false,
+    url: 'https://api.foursquare.com/v2/venues/search?ll=' + data.location.lat
+      + ','+ data.location.lng +'&name=' + data.title + '&limit=30&intent=mat'
+      + 'ch&client_id=55GRDDIO4M4MSANZAEVW3YOIBGYHHIO5KLNVJALFQ5MOFR4G&client'
+      + '_secret=IGWG0OXVMSZGVULL12DSBCKXA50FQV5PDO2NASVMTFBLW54B&v=20170801',
+    success: function(data){
+      if(data.meta.code == 200){
+        callback(data.response.venues[0]);
+      } else {
+        callback('');
+      }
+    }
   });
 }
 
+function currentMarker(marker, markers, infoWindow) {
+  function setPlaceDetails(placeDetails) {
+    marker['placeDetails'] = placeDetails;
+  }
+  if(!infoWindow){
+    getPlacesDetails(marker, setPlaceDetails);
+    return;
+  }
+  getPlacesDetails(marker, setPlaceDetails, infoWindow);
+  //change previous markers color
+  markers.forEach(obj =>{
+    makeMarkerIcon(obj.marker, 'default');
+  })
+  makeMarkerIcon(marker, 'black');
+  marker['currentColor'] = 'black';
+  animateMarker(marker);
+}
 
+
+var Location = function(data) {
+  var self = this;
+  var icon = {
+      url: 'static/chickenDefault.png',
+      size: new google.maps.Size(20, 32),
+      origin: new google.maps.Point(0, 0),
+      anchor: new google.maps.Point(0, 32),
+      scale: 10
+    };
+  this.marker = new google.maps.Marker({
+    position: data.location,
+    title: data.title,
+    animation: google.maps.Animation.DROP,
+    map: map,
+    icon: icon
+  });
+  //async call find the id of the given location
+  searchIdFourSqr(data, function(idx){
+    self.marker['idFourSqr'] = idx.id;
+  });
+}
+
+var ModalView = function(marker) {
+  this.title = ko.observable(marker.title || '');
+  this.address = ko.observableArray([]);
+  this.rating = ko.observable();
+  this.price = ko.observable();
+  this.phone = ko.observable('not available');
+  this.notAvailable = ko.observable("Sorry info not available");
+  this.photoUrlArray = ko.observableArray([{
+    'url': 'static/nepal.jpg',
+    'caption': 'Go Visit Nepal'
+  }]);
+  this.tipArray = ko.observableArray(["here's a tip, try the food first"]);
+  this.hours = ko.observableArray();
+
+  if(marker.placeDetails) {
+    console.log(marker.placeDetails)
+    this.address(marker.placeDetails.location.formattedAddress);
+
+    if(marker.placeDetails.rating) {
+      this.rating(Math.round(marker.placeDetails.rating));
+      }
+      if(marker.placeDetails.price) {
+        this.price(marker.placeDetails.price.currency);
+      }
+      if(marker.placeDetails.contact.formattedPhone) {
+        this.phone(marker.placeDetails.contact.formattedPhone);
+      }
+      if(marker.placeDetails.hours) {
+        this.notAvailable('');
+        this.hours(marker.placeDetails.hours.timeframes);
+      }
+      if(marker.placeDetails.photos) {
+        var url;
+        var caption
+        this.photoUrlArray([]);
+        var items = marker.placeDetails.photos.groups[0].items;
+        items.forEach((item, idx) => {
+          url = item.prefix + '500x300' + item.suffix;
+          caption = item.user.firstName;
+          this.photoUrlArray.push({'url': url, 'caption': caption});
+        })
+      }
+      if(marker.placeDetails.tips.groups[0].items[0]) {
+        var tips = marker.placeDetails.tips.groups[0].items;
+        this.tipArray([]);
+        //get ten tips
+        for(var i=0; i < 5; i++) {
+          this.tipArray.push(tips[i].text);
+        }
+      }
+    }
+}
+
+
+var FilterView = function(locations) {
+  this.filteredArray = ko.observableArray(locations);
+  this.btnVisibility = ko.observable(null);
+
+  this.filterBtn = function(dataModel) {
+    // remove all markers first, then display the markers on the filter list
+    dataModel.locations().forEach(obj => {
+      obj.marker.setMap(null);
+    })
+    locations.forEach(location => {
+      location.marker.setMap(map);
+    })
+  }.bind(this);
+
+  this.changeMarkerIcon = function(childElement, data, event) {
+    //change all to default color, except the selected marker [black]
+    this.filteredArray().forEach(obj =>{
+      if(obj.marker.currentColor != 'black'){
+        makeMarkerIcon(obj.marker, 'default');
+      }
+    })
+    if(data.marker.currentColor != 'black'){
+      makeMarkerIcon(data.marker, 'blue');
+    }
+    currentMarker(data.marker);
+    // make show detail button visible just for the highlighted element
+    childElement.style.visibility = 'visible';
+  }.bind(this)
+  this.changeMarkertoDefault = function(childElement, data, event) {
+    if(data.marker.currentColor != 'black'){
+      makeMarkerIcon(data.marker, 'default');
+    }
+    childElement.style.visibility = 'hidden';
+  }.bind(this);
+
+}
 
 
 
 //main view
 var ViewModel = function() {
-  sidebarInitial();
-
+  initiateSidebar();
   var self = this;
 
-  self.location = ko.observableArray(initLocations);
-  // console.log(markers)
+  this.locations = ko.observableArray(initLocations.map(location => {
+    return new Location(location);
+  }));
 
+  //add event listener for the each markers on the map
+  var self = this;
+  this.locations().forEach(location => {
+    location.marker.addListener('click', function() {
+      self.selectMarkerOnMap(this);
+    });
+  });
 
+  this.currentFilteredView = ko.observable(new FilterView(this.locations()));
+  this.modalView = ko.observable(new ModalView(this.locations()[0].marker));
 
-  //sidebar initial state
-  this.open = ko.observable(false);
+  this.filterTitle = function(dataModel, event) {
+    this.filteredArray([]);
+    var filter
+    var data = dataModel.locations();
+    var input = dataModel.inputTitle();
+    //check for empty backspace in input field
+    filter = input ? input.toUpperCase() : '';
+    //check for string match
+    data.forEach(obj => {
+      var title = obj.marker.title.toUpperCase();
+      //if input field empty, display all markers
+      if(filter==''){
+        obj.marker.setMap(map);
+      }
+      if(title.indexOf(filter) > -1){
+        // obj.marker.setMap(map);
+        this.filteredArray.push(obj);
+      } else {
+        // obj.marker.setMap(null);
+      }
+    });
+    this.currentFilteredView(new FilterView(this.filteredArray()));
+  }.bind(this);
+
+  this.infoWindow = new google.maps.InfoWindow();
+
+  this.selectFromList = function(data, e) {
+    //show details only if marker is on the map
+    if(data.marker.map){
+      this.selectMarkerOnMap(data.marker);
+    }
+  }.bind(this);
+
+  this.selectMarkerOnMap = function(marker) {
+    currentMarker(marker, this.locations(), this.infoWindow);
+  }.bind(this);
+
+  this.showModal = function(data) {
+    this.modalView(new ModalView(data.marker));
+    $('.ui.rating').rating('disable');
+    $('.ui.modal').modal('show');
+    $('.shape').shape();
+    $('#1side').addClass('active');
+  }.bind(this);
+
+  this.flipNext = function(){
+    $('.shape').shape('flip right');
+  }
+
+  this.flipPrevious = function(){
+    $('.shape').shape('flip left');
+  }
+
+  this.inputTitle = ko.observable();
+
+  //inital filtered Array
+  this.filteredArray = ko.observableArray(this.locations());
+
 
   this.sidebarToggle = function() {
-    self.open($("#sidebar").sidebar('is hidden'));
-    self.location(locations);
+    $('.chevron').toggleClass('open');
   }
 
-  this.arrowDirection = ko.computed(function() {
-    //return left or right class according to the state
-    return this.open() ? "left" : "right"
-    }, this)
-  }
+}
+
+
+var map;
+function initMap() {
+  map = new google.maps.Map(document.getElementById('map'), {
+    center: {lat: 30.275, lng: -97.732},
+    zoom: 11
+  });
+  var viewModel = new ViewModel();
+  ko.applyBindings(viewModel);
+}

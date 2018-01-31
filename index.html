@@ -14,45 +14,135 @@
 
 </head>
 <body class="pushable">
-  <div class="ui left vertical inverted labeled icon sidebar menu " id="sidebar">
+  <div class="ui left vertical inverted labeled icon sidebar menu " id="sidebar" >
     <a class="item">
-      <p>Bart Locations</p>
+      <p>Austin BBQ Locations</p>
     </a>
     <div class="item">
-    <div class="ui action input">
-      <input type="text" placeholder="Station Location">
-      <button class="ui teal right labeled icon button">
-        <i class="options icon"></i>
-        Filter
-      </button>
+      <div class="ui action input">
+        <input
+        type="text"
+        placeholder="Your Barbecue Station"
+        data-bind="textInput: inputTitle, event: { keyup: filterTitle }">
+        <button class="ui teal right labeled icon button" data-bind="click: currentFilteredView().filterBtn">
+          <i class="options icon"></i>
+          Filter
+        </button>
       </div>
     </div>
-    <div class="item">
-      <div class="menu">
-        <a class="item">Topics</a>
-        <a class="item">Places</a>
-        <a class="item">Maces</a>
-    </div>
+    <div class="item" data-bind="with: currentFilteredView">
+      <div class="menu" data-bind="foreach: filteredArray">
+        <p class="menu-item"
+        data-bind="click: $root.selectFromList,
+        event: { mouseover: $parent.changeMarkerIcon.bind($data, $element.children[1]),
+          mouseout: $parent.changeMarkertoDefault.bind($data, $element.children[1]) }">
+          <a id="place-item" data-bind="text: marker.title"></a>
+          <button
+          class="ui tiny icon button"
+          id="expand-btn"
+          data-bind="click: $root.showModal, clickBubble: false">
+          <i class="expand black icon"></i>
+        </button>
+      </p>
     </div>
   </div>
-  <div class="ui black big launch right attached fixed button"
-    id="launch-btn" data-bind="click: sidebarToggle">
-    <i class="chevron icon" data-bind="css: arrowDirection"></i>
+</div>
+<div class="ui black big launch right attached fixed button"
+id="launch-btn" data-bind="click: sidebarToggle">
+<i class="chevron icon right"></i>
+</div>
+<div class="pusher" id="map">
+</div>
+
+<!-- modal -->
+<div class="ui modal" data-bind="with: modalView" >
+  <i class="close icon"></i>
+  <div class="header" data-bind="text: title" ></div>
+  <div class="content">
+    <div class="ui icon message">
+      <i class="inbox icon"></i>
+      <div class="content" data-bind="foreach: address">
+        <div data-bind="text: $data"></div>
+      </div>
+      <div>Phone:&nbsp&nbsp</div><div data-bind="text: phone"></div>
+    </div>
+    <span><span>Price: </span><span data-bind="text: price"></span></span>
+    <span>&nbsp&nbsp&nbsp&nbsp&nbsp&nbspRating:&nbsp&nbsp</span>
+    <span class="ui large star rating"
+      data-bind="attr: {
+        'data-rating': rating,
+        'data-max-rating':'10'
+      },
+      text: rating">
+    </span>
+
+
+    <table class="ui red table">
+      <thead>
+        <tr>
+          <th>Business Hour</th>
+          <th data-bind="text: notAvailable"></th>
+          <th></th>
+        </tr>
+      </thead><tbody>
+        <tr data-bind="foreach: hours">
+          <td data-bind="text: days">Apples</td>
+        </tr>
+        <tr data-bind="foreach: hours">
+          <td data-bind="text: open[0].renderedTime">Orange</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="ui grid">
+      <div class="six wide column">
+        <div class="ui buttons nav-btn">
+          <button class="ui button" data-bind="click: $root.flipNext">Previous</button>
+          <div class="or"></div>
+          <button class="ui teal button" data-bind="click: $root.flipPrevious">Next</button>
+        </div>
+        <!-- <img alt="OOPS!"
+        attributes="https://pixabay.com/en/nepal-ebc-gokyo-trekking-2565878"> -->
+        <div class="ui shape">
+          <div class="sides" data-bind="foreach: photoUrlArray">
+            <div class="side side-container" data-bind="attr: { id: $index()+'side' }" >
+              <div class="ui image medium rounded content">
+                <img data-bind="attr: { src: url }" >
+              </div>
+                <a class="ui blue image label">
+                Photo By:
+                <div class="detail" data-bind="text: caption"></div>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="ten wide column">
+        <div class="ui card" id="tips-card">
+          <div class="content">
+            <div class="header">Useful Tips of the place</div>
+          </div>
+          <div class="content">
+            <ul class="ui list" data-bind="foreach: tipArray">
+              <li data-bind="text:$data"></li>
+            </ul>
+          </div>
+      </div>
+      </div>
+
+    </div>
   </div>
 
-  <div class="pusher" id="map"></div>
-  <div data-bind="location: location, mapp: map"></div>
 
 
   <script src="bower_components/jquery/dist/jquery.js"></script>
   <script src='bower_components/knockout/dist/knockout.js'></script>
   <script
-    src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.9/semantic.min.js">
+  src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.9/semantic.min.js">
   </script>
   <script src="js/app.js"></script>
   <script async defer
-    src=
-        "https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyAXeLDsV2v8YP_G_Kos4erYBBNeFMPyX4I&callback=initMap">
+  src=
+  "https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyAXeLDsV2v8YP_G_Kos4erYBBNeFMPyX4I&callback=initMap">
   </script>
 </body>
 </html>

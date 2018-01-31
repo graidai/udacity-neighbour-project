@@ -7,3 +7,51 @@
     0.3s width ease,
     0.5s transform ease;
 }
+
+.chevron.open {
+  -webkit-transform: rotate(-180deg);
+  -moz-transform: rotate(-180deg);
+  -o-transform: rotate(-180deg);
+  transform: rotate(-180deg);
+}
+
+.chevron {
+  -webkit-transition: .5s ease-in-out!important;
+  -moz-transition: .5s ease-in-out!important;
+  -o-transition: .5s ease-in-out!important;
+  transition: .5s ease-in-out !important;
+}
+
+.menu-item {
+  margin: 1px 0 1px 0;
+  padding: 5px 0 5px 45px;
+}
+
+.menu-item:hover {
+  background-color: #2f2b2b;
+  /* margin-right: 10px; */
+}
+
+.nav-btn {
+  padding-bottom: 10px;
+}
+
+#place-item {
+  color: #fafafa;
+  text-align: right;
+}
+
+#expand-btn {
+  visibility: hidden;
+  background-color: #EBFF03;
+  margin-left: 1.5rem;
+  color: #fafafa;
+}
+
+#tips-card {
+  width: 100%;
+}
+
+.side-container {
+  padding: 0 !important;
+}
