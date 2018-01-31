@@ -8,6 +8,22 @@
     0.5s transform ease;
 }
 
+#place-item {
+  color: #fafafa;
+  text-align: right;
+}
+
+#expand-btn {
+  visibility: hidden;
+  background-color: #EBFF03;
+  margin-left: 1.5rem;
+  color: #fafafa;
+}
+
+#tips-card {
+  width: 100%;
+}
+
 .chevron.open {
   -webkit-transform: rotate(-180deg);
   -moz-transform: rotate(-180deg);
@@ -36,21 +52,6 @@
   padding-bottom: 10px;
 }
 
-#place-item {
-  color: #fafafa;
-  text-align: right;
-}
-
-#expand-btn {
-  visibility: hidden;
-  background-color: #EBFF03;
-  margin-left: 1.5rem;
-  color: #fafafa;
-}
-
-#tips-card {
-  width: 100%;
-}
 
 .side-container {
   padding: 0 !important;

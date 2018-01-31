@@ -34,8 +34,8 @@
       <div class="menu" data-bind="foreach: filteredArray">
         <p class="menu-item"
         data-bind="click: $root.selectFromList,
-        event: { mouseover: $parent.changeMarkerIcon.bind($data, $element.children[1]),
-          mouseout: $parent.changeMarkertoDefault.bind($data, $element.children[1]) }">
+        event: { mouseover: $parent.changeMarkerIcon.bind($data, $element.children[1], $root),
+          mouseout: $parent.changeMarkertoDefault.bind($data, $element.children[1], $root) }">
           <a id="place-item" data-bind="text: marker.title"></a>
           <button
           class="ui tiny icon button"

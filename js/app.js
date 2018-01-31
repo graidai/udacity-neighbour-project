@@ -129,11 +129,11 @@ var initLocations = [
 
 
 var initiateSidebar = function(){$("#sidebar")
-  .sidebar({
-    dimPage: false,
-    closable: false,
-  })
-  .sidebar('attach events','#launch-btn')
+.sidebar({
+  dimPage: false,
+  closable: false,
+})
+.sidebar('attach events','#launch-btn')
 }
 
 
@@ -158,75 +158,51 @@ function getPlacesDetails(marker, detailFunc, infoWindow) {
         }
         var venue = result.response.venue;
         if(result.meta.code == 200){
+          //if no infoWindow, just return the values of callback
           if(!infoWindow){
             detailFunc(venue);
             return;
           }
-          infoWindow.setContent('');
-          infoWindow.marker = marker;
-          innerHTML = '<div>';
-          innerHTML += '<strong>' + marker.title + '</strong>';
-          if (venue.location.formattedAddress) {
-            innerHTML += '<br><br><p>'
-            + venue.location.formattedAddress.join(',<br>');
-          }
-          if (venue.contact.formattedPhone) {
-            innerHTML += '<br>'
-            + venue.contact.formattedPhone;
-          }
-          if (venue.rating) {
-            innerHTML += '<br><br>Rating: '
-            + venue.rating;
-          }
-          if (venue.price) {
-            innerHTML += ', Price: '
-            + venue.price.currency;
-          }
-          if (venue.bestPhoto) {
-            innerHTML += '<br><img src="'
-            + venue.bestPhoto.prefix
-            + '200x100' + venue.bestPhoto.suffix +'">';
-          }
-          innerHTML += '</p><button class="ui orange button" id="detail-btn" data-bind="click: sidebarToggle">ss</button></div>'
-          innerHTML += '</p></div>'
-          infoWindow.setContent(innerHTML);
-          infoWindow.open(map, marker);
+          innerContent(venue);
           detailFunc(venue);
         }
       }
     });
   } else {
     if(!infoWindow) return;
-
     var venue = marker.placeDetails;
-      infoWindow.marker = marker;
-      innerHTML = '<div>';
-      innerHTML += '<strong>' + marker.title + '</strong>';
-      if (venue.location.formattedAddress) {
-        innerHTML += '<br><br><p>'
-        + venue.location.formattedAddress.join(',<br>');
-      }
-      if (venue.contact.formattedPhone) {
-        innerHTML += '<br>'
-        + venue.contact.formattedPhone;
-      }
-      if (venue.rating) {
-        innerHTML += '<br><br>Rating: '
-        + venue.rating;
-      }
-      if (venue.price) {
-        innerHTML += ', Price: '
-        + venue.price.currency;
-      }
-      if (venue.bestPhoto) {
-        innerHTML += '<br><img src="'
-        + venue.bestPhoto.prefix
-        + '200x100' + venue.bestPhoto.suffix +'">';
-      }
-      innerHTML += '</p><button class="ui orange button" id="detail-btn" data-bind="click: sidebarToggle">ss</button></div>'
-      innerHTML += '</p></div>'
-      infoWindow.setContent(innerHTML);
-      infoWindow.open(map, marker);
+    innerContent(venue);
+  }
+  function innerContent(venue) {
+    infoWindow.setContent('');
+    infoWindow.marker = marker;
+    innerHTML = '<div>';
+    innerHTML += '<strong>' + marker.title + '</strong>';
+    if (venue.location.formattedAddress) {
+      innerHTML += '<br><br><p>'
+      + venue.location.formattedAddress.join(',<br>');
+    }
+    if (venue.contact.formattedPhone) {
+      innerHTML += '<br>'
+      + venue.contact.formattedPhone;
+    }
+    if (venue.rating) {
+      innerHTML += '<br><br>Rating: '
+      + venue.rating;
+    }
+    if (venue.price) {
+      innerHTML += ', Price: '
+      + venue.price.currency;
+    }
+    if (venue.bestPhoto) {
+      innerHTML += '<br><img src="'
+      + venue.bestPhoto.prefix
+      + '200x100' + venue.bestPhoto.suffix +'">';
+    }
+    innerHTML += '</p><button class="ui orange button" id="detail-btn" data-bind="click: sidebarToggle">ss</button></div>'
+    innerHTML += '</p></div>'
+    infoWindow.setContent(innerHTML);
+    infoWindow.open(map, marker);
   }
 }
 
@@ -268,9 +244,9 @@ function searchIdFourSqr(data, callback) {
     dataType: "jsonp",
     cache: false,
     url: 'https://api.foursquare.com/v2/venues/search?ll=' + data.location.lat
-      + ','+ data.location.lng +'&name=' + data.title + '&limit=30&intent=mat'
-      + 'ch&client_id=55GRDDIO4M4MSANZAEVW3YOIBGYHHIO5KLNVJALFQ5MOFR4G&client'
-      + '_secret=IGWG0OXVMSZGVULL12DSBCKXA50FQV5PDO2NASVMTFBLW54B&v=20170801',
+    + ','+ data.location.lng +'&name=' + data.title + '&limit=30&intent=mat'
+    + 'ch&client_id=55GRDDIO4M4MSANZAEVW3YOIBGYHHIO5KLNVJALFQ5MOFR4G&client'
+    + '_secret=IGWG0OXVMSZGVULL12DSBCKXA50FQV5PDO2NASVMTFBLW54B&v=20170801',
     success: function(data){
       if(data.meta.code == 200){
         callback(data.response.venues[0]);
@@ -281,7 +257,7 @@ function searchIdFourSqr(data, callback) {
   });
 }
 
-function currentMarker(marker, markers, infoWindow) {
+function selectMarker(marker, markers, infoWindow) {
   function setPlaceDetails(placeDetails) {
     marker['placeDetails'] = placeDetails;
   }
@@ -300,15 +276,16 @@ function currentMarker(marker, markers, infoWindow) {
 }
 
 
+
 var Location = function(data) {
   var self = this;
   var icon = {
-      url: 'static/chickenDefault.png',
-      size: new google.maps.Size(20, 32),
-      origin: new google.maps.Point(0, 0),
-      anchor: new google.maps.Point(0, 32),
-      scale: 10
-    };
+    url: 'static/chickenDefault.png',
+    size: new google.maps.Size(20, 32),
+    origin: new google.maps.Point(0, 0),
+    anchor: new google.maps.Point(0, 32),
+    scale: 10
+  };
   this.marker = new google.maps.Marker({
     position: data.location,
     title: data.title,
@@ -323,6 +300,7 @@ var Location = function(data) {
 }
 
 var ModalView = function(marker) {
+  //initail default observables
   this.title = ko.observable(marker.title || '');
   this.address = ko.observableArray([]);
   this.rating = ko.observable();
@@ -342,43 +320,44 @@ var ModalView = function(marker) {
 
     if(marker.placeDetails.rating) {
       this.rating(Math.round(marker.placeDetails.rating));
-      }
-      if(marker.placeDetails.price) {
-        this.price(marker.placeDetails.price.currency);
-      }
-      if(marker.placeDetails.contact.formattedPhone) {
-        this.phone(marker.placeDetails.contact.formattedPhone);
-      }
-      if(marker.placeDetails.hours) {
-        this.notAvailable('');
-        this.hours(marker.placeDetails.hours.timeframes);
-      }
-      if(marker.placeDetails.photos) {
-        var url;
-        var caption
-        this.photoUrlArray([]);
-        var items = marker.placeDetails.photos.groups[0].items;
-        items.forEach((item, idx) => {
-          url = item.prefix + '500x300' + item.suffix;
-          caption = item.user.firstName;
-          this.photoUrlArray.push({'url': url, 'caption': caption});
-        })
-      }
-      if(marker.placeDetails.tips.groups[0].items[0]) {
-        var tips = marker.placeDetails.tips.groups[0].items;
-        this.tipArray([]);
-        //get ten tips
-        for(var i=0; i < 5; i++) {
-          this.tipArray.push(tips[i].text);
-        }
+    }
+    if(marker.placeDetails.price) {
+      this.price(marker.placeDetails.price.currency);
+    }
+    if(marker.placeDetails.contact.formattedPhone) {
+      this.phone(marker.placeDetails.contact.formattedPhone);
+    }
+    if(marker.placeDetails.hours) {
+      this.notAvailable('');
+      this.hours(marker.placeDetails.hours.timeframes);
+    }
+    if(marker.placeDetails.photos) {
+      var url;
+      var caption
+      this.photoUrlArray([]);
+      var items = marker.placeDetails.photos.groups[0].items;
+      items.forEach((item, idx) => {
+        url = item.prefix + '500x300' + item.suffix;
+        caption = item.user.firstName;
+        this.photoUrlArray.push({'url': url, 'caption': caption});
+      })
+    }
+    if(marker.placeDetails.tips.groups[0].items[0]) {
+      var tips = marker.placeDetails.tips.groups[0].items;
+      this.tipArray([]);
+      //get ten tips
+      for(var i=0; i < 5; i++) {
+        this.tipArray.push(tips[i].text);
       }
     }
+  }
 }
 
 
 var FilterView = function(locations) {
   this.filteredArray = ko.observableArray(locations);
   this.btnVisibility = ko.observable(null);
+  this.currMarker = ko.observable();
 
   this.filterBtn = function(dataModel) {
     // remove all markers first, then display the markers on the filter list
@@ -390,22 +369,17 @@ var FilterView = function(locations) {
     })
   }.bind(this);
 
-  this.changeMarkerIcon = function(childElement, data, event) {
-    //change all to default color, except the selected marker [black]
-    this.filteredArray().forEach(obj =>{
-      if(obj.marker.currentColor != 'black'){
-        makeMarkerIcon(obj.marker, 'default');
-      }
-    })
-    if(data.marker.currentColor != 'black'){
+  //mouse hover on locations list
+  this.changeMarkerIcon = function(childElement, viewModel, data, event) {
+    if(viewModel.currentMarker() != data.marker){
       makeMarkerIcon(data.marker, 'blue');
     }
-    currentMarker(data.marker);
+    selectMarker(data.marker);
     // make show detail button visible just for the highlighted element
     childElement.style.visibility = 'visible';
   }.bind(this)
-  this.changeMarkertoDefault = function(childElement, data, event) {
-    if(data.marker.currentColor != 'black'){
+  this.changeMarkertoDefault = function(childElement, viewModel, data, event) {
+    if(viewModel.currentMarker() != data.marker){
       makeMarkerIcon(data.marker, 'default');
     }
     childElement.style.visibility = 'hidden';
@@ -430,10 +404,24 @@ var ViewModel = function() {
     location.marker.addListener('click', function() {
       self.selectMarkerOnMap(this);
     });
+    location.marker.addListener('mouseover', function() {
+      if(self.currentMarker() != this){
+        makeMarkerIcon(this, 'blue');
+      }
+    });
+    location.marker.addListener('mouseout', function() {
+      if(self.currentMarker() != this){
+        makeMarkerIcon(this, 'default');
+      }
+    });
   });
 
+  //inital map and model entities
   this.currentFilteredView = ko.observable(new FilterView(this.locations()));
   this.modalView = ko.observable(new ModalView(this.locations()[0].marker));
+  this.infoWindow = new google.maps.InfoWindow();
+  this.inputTitle = ko.observable();
+  this.currentMarker = ko.observable();
 
   this.filterTitle = function(dataModel, event) {
     this.filteredArray([]);
@@ -459,19 +447,23 @@ var ViewModel = function() {
     this.currentFilteredView(new FilterView(this.filteredArray()));
   }.bind(this);
 
-  this.infoWindow = new google.maps.InfoWindow();
 
+
+  //select location from the list
   this.selectFromList = function(data, e) {
     //show details only if marker is on the map
     if(data.marker.map){
       this.selectMarkerOnMap(data.marker);
     }
   }.bind(this);
-
+  //select location from the marker on map
   this.selectMarkerOnMap = function(marker) {
-    currentMarker(marker, this.locations(), this.infoWindow);
+    selectMarker(marker, this.locations(), this.infoWindow);
+    this.currentMarker(marker);
   }.bind(this);
 
+
+  //semantic ui implementations
   this.showModal = function(data) {
     this.modalView(new ModalView(data.marker));
     $('.ui.rating').rating('disable');
@@ -487,12 +479,6 @@ var ViewModel = function() {
   this.flipPrevious = function(){
     $('.shape').shape('flip left');
   }
-
-  this.inputTitle = ko.observable();
-
-  //inital filtered Array
-  this.filteredArray = ko.observableArray(this.locations());
-
 
   this.sidebarToggle = function() {
     $('.chevron').toggleClass('open');
