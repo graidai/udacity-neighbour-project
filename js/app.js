@@ -129,12 +129,14 @@ var initLocations = [
 
 
 var initiateSidebar = function(){$("#sidebar")
-.sidebar({
-  dimPage: false,
-  closable: false,
-})
-.sidebar('attach events','#launch-btn')
+  .sidebar({
+    dimPage: false,
+    closable: false,
+  })
+  .sidebar('attach events','#launch-btn')
 }
+
+$('#launch-btn').popup({on: 'focus'});
 
 
 function getPlacesDetails(marker, detailFunc, infoWindow) {
@@ -199,7 +201,7 @@ function getPlacesDetails(marker, detailFunc, infoWindow) {
       + venue.bestPhoto.prefix
       + '200x100' + venue.bestPhoto.suffix +'">';
     }
-    innerHTML += '</p><button class="ui orange button" id="detail-btn" data-bind="click: sidebarToggle">ss</button></div>'
+
     innerHTML += '</p></div>'
     infoWindow.setContent(innerHTML);
     infoWindow.open(map, marker);
@@ -309,7 +311,8 @@ var ModalView = function(marker) {
   this.notAvailable = ko.observable("Sorry info not available");
   this.photoUrlArray = ko.observableArray([{
     'url': 'static/nepal.jpg',
-    'caption': 'Go Visit Nepal'
+    'caption': 'Go Visit Nepal',
+    'attribution': 'https://pixabay.com/en/nepal-ebc-gokyo-trekking-2565878'
   }]);
   this.tipArray = ko.observableArray(["here's a tip, try the food first"]);
   this.hours = ko.observableArray();
@@ -358,6 +361,7 @@ var FilterView = function(locations) {
   this.filteredArray = ko.observableArray(locations);
   this.btnVisibility = ko.observable(null);
   this.currMarker = ko.observable();
+
 
   this.filterBtn = function(dataModel) {
     // remove all markers first, then display the markers on the filter list
@@ -422,8 +426,17 @@ var ViewModel = function() {
   this.infoWindow = new google.maps.InfoWindow();
   this.inputTitle = ko.observable();
   this.currentMarker = ko.observable();
+  this.filteredArray = ko.observableArray(this.locations());
+  this.sidebarStatus = ko.observable(false);
+  this.si= ko.observable('df')
 
   this.filterTitle = function(dataModel, event) {
+
+    this.si = ko.computed(function() {
+      return $('#sidebar').sidebar('is visible')
+    });
+
+
     this.filteredArray([]);
     var filter
     var data = dataModel.locations();
@@ -438,6 +451,8 @@ var ViewModel = function() {
         obj.marker.setMap(map);
       }
       if(title.indexOf(filter) > -1){
+        // in case you want to filter without clicking the button in real time
+        // surprisingly easier than having to put the button implemntation
         // obj.marker.setMap(map);
         this.filteredArray.push(obj);
       } else {
@@ -482,7 +497,8 @@ var ViewModel = function() {
 
   this.sidebarToggle = function() {
     $('.chevron').toggleClass('open');
-  }
+
+  }.bind(this);
 
 }
 

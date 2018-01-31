@@ -45,13 +45,12 @@
 
 .menu-item:hover {
   background-color: #2f2b2b;
-  /* margin-right: 10px; */
+  cursor: cell;
 }
 
 .nav-btn {
   padding-bottom: 10px;
 }
-
 
 .side-container {
   padding: 0 !important;

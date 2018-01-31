@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Neighbourhood Project</title>
+  <title>Friendly Neighbour Udacity</title>
   <!-- <link rel="stylesheet"
     href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
     integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
@@ -11,9 +11,16 @@
   <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.9/semantic.min.css"/>
   <link rel="stylesheet" type="text/css" href="static/index.css"/>
+  <link rel="shortcut icon" type="image/png"
+    license ="https://creativecommons.org/licenses/by-nc-sa/4.0/"
+    href="static/friendlyNeighbour.png"
+    link="http://icons8.com/license"
+    attribution="http://mattahan.deviantart.com"/>
 
 </head>
 <body class="pushable">
+
+  <!-- semantic side bar -->
   <div class="ui left vertical inverted labeled icon sidebar menu " id="sidebar" >
     <a class="item">
       <p>Austin BBQ Locations</p>
@@ -30,6 +37,7 @@
         </button>
       </div>
     </div>
+    <div data-bind="text: si">sd</div>
     <div class="item" data-bind="with: currentFilteredView">
       <div class="menu" data-bind="foreach: filteredArray">
         <p class="menu-item"
@@ -46,11 +54,18 @@
       </p>
     </div>
   </div>
+
 </div>
 <div class="ui black big launch right attached fixed button"
-id="launch-btn" data-bind="click: sidebarToggle">
+  id="launch-btn"
+  data-bind="click: sidebarToggle ,
+    attr: { 'data-tooltip': sidebarStatus ? 'Hide Sidebar' : 'Show Locations' }"
+  data-position="right center"
+  data-inverted="">
 <i class="chevron icon right"></i>
 </div>
+
+<!-- main map canvas -->
 <div class="pusher" id="map">
 </div>
 
@@ -69,80 +84,80 @@ id="launch-btn" data-bind="click: sidebarToggle">
     <span><span>Price: </span><span data-bind="text: price"></span></span>
     <span>&nbsp&nbsp&nbsp&nbsp&nbsp&nbspRating:&nbsp&nbsp</span>
     <span class="ui large star rating"
-      data-bind="attr: {
-        'data-rating': rating,
-        'data-max-rating':'10'
-      },
-      text: rating">
-    </span>
+    data-bind="attr: {
+      'data-rating': rating,
+      'data-max-rating':'10'
+    },
+    text: rating">
+  </span>
 
 
-    <table class="ui red table">
-      <thead>
-        <tr>
-          <th>Business Hour</th>
-          <th data-bind="text: notAvailable"></th>
-          <th></th>
-        </tr>
-      </thead><tbody>
-        <tr data-bind="foreach: hours">
-          <td data-bind="text: days">Apples</td>
-        </tr>
-        <tr data-bind="foreach: hours">
-          <td data-bind="text: open[0].renderedTime">Orange</td>
-        </tr>
-      </tbody>
-    </table>
-    <div class="ui grid">
-      <div class="six wide column">
-        <div class="ui buttons nav-btn">
-          <button class="ui button" data-bind="click: $root.flipNext">Previous</button>
-          <div class="or"></div>
-          <button class="ui teal button" data-bind="click: $root.flipPrevious">Next</button>
-        </div>
-        <!-- <img alt="OOPS!"
-        attributes="https://pixabay.com/en/nepal-ebc-gokyo-trekking-2565878"> -->
-        <div class="ui shape">
-          <div class="sides" data-bind="foreach: photoUrlArray">
-            <div class="side side-container" data-bind="attr: { id: $index()+'side' }" >
-              <div class="ui image medium rounded content">
-                <img data-bind="attr: { src: url }" >
-              </div>
-                <a class="ui blue image label">
-                Photo By:
-                <div class="detail" data-bind="text: caption"></div>
-              </a>
+  <table class="ui red table">
+    <thead>
+      <tr>
+        <th>Business Hour</th>
+        <th data-bind="text: notAvailable"></th>
+        <th></th>
+      </tr>
+    </thead><tbody>
+      <tr data-bind="foreach: hours">
+        <td data-bind="text: days">Apples</td>
+      </tr>
+      <tr data-bind="foreach: hours">
+        <td data-bind="text: open[0].renderedTime">Orange</td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="ui grid">
+    <div class="six wide column">
+      <div class="ui buttons nav-btn">
+        <button class="ui button" data-bind="click: $root.flipNext">Previous</button>
+        <div class="or"></div>
+        <button class="ui teal button" data-bind="click: $root.flipPrevious">Next</button>
+      </div>
+      <!-- <img alt="OOPS!"
+      attributes="https://pixabay.com/en/nepal-ebc-gokyo-trekking-2565878"> -->
+      <div class="ui shape">
+        <div class="sides" data-bind="foreach: photoUrlArray">
+          <div class="side side-container" data-bind="attr: { id: $index()+'side' }" >
+            <div class="ui image medium rounded content">
+              <img data-bind="attr: { src: url }" >
             </div>
+            <a class="ui blue image label">
+              Photo By:
+              <div class="detail" data-bind="text: caption"></div>
+            </a>
           </div>
         </div>
       </div>
-      <div class="ten wide column">
-        <div class="ui card" id="tips-card">
-          <div class="content">
-            <div class="header">Useful Tips of the place</div>
-          </div>
-          <div class="content">
-            <ul class="ui list" data-bind="foreach: tipArray">
-              <li data-bind="text:$data"></li>
-            </ul>
-          </div>
-      </div>
-      </div>
-
     </div>
+    <div class="ten wide column">
+      <div class="ui card" id="tips-card">
+        <div class="content">
+          <div class="header">Useful Tips</div>
+        </div>
+        <div class="content">
+          <ul class="ui list" data-bind="foreach: tipArray">
+            <li data-bind="text:$data"></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
   </div>
+</div>
 
 
 
-  <script src="bower_components/jquery/dist/jquery.js"></script>
-  <script src='bower_components/knockout/dist/knockout.js'></script>
-  <script
-  src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.9/semantic.min.js">
-  </script>
-  <script src="js/app.js"></script>
-  <script async defer
-  src=
-  "https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyAXeLDsV2v8YP_G_Kos4erYBBNeFMPyX4I&callback=initMap">
-  </script>
+<script src="bower_components/jquery/dist/jquery.js"></script>
+<script src='bower_components/knockout/dist/knockout.js'></script>
+<script
+src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.9/semantic.min.js">
+</script>
+<script src="js/app.js"></script>
+<script async defer
+src=
+"https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyAXeLDsV2v8YP_G_Kos4erYBBNeFMPyX4I&callback=initMap">
+</script>
 </body>
 </html>
