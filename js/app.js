@@ -152,9 +152,13 @@ function getPlacesDetails(marker, detailFunc, infoWindow) {
       success: function(result, status){
         if(result.meta.errorDetail){
           console.log(result.meta.errorDetail)
+          if (!infoWindow) {
+            alert('No info available. Try again later');
+            return;
+          };
           infoWindow.setContent('OOPS!! No Info Available');
           infoWindow.open(map, marker);
-          return
+          return;
         }
         var venue = result.response.venue;
         if(result.meta.code == 200){
@@ -316,9 +320,7 @@ var ModalView = function(marker) {
   this.hours = ko.observableArray();
 
   if(marker.placeDetails) {
-    console.log(marker.placeDetails)
     this.address(marker.placeDetails.location.formattedAddress);
-
     if(marker.placeDetails.rating) {
       this.rating(Math.round(marker.placeDetails.rating));
     }
@@ -426,6 +428,7 @@ var ViewModel = function() {
   this.currentMarker = ko.observable();
   this.filteredArray = ko.observableArray(this.locations());
   this.sidebarStatus= ko.observable('Show Locations');
+  this.currentInfoWindow = ko.observable();
 
 
 
@@ -468,6 +471,7 @@ var ViewModel = function() {
   this.selectMarkerOnMap = function(marker) {
     selectMarker(marker, this.locations(), this.infoWindow);
     this.currentMarker(marker);
+    this.currentInfoWindow(this.infoWindow);
   }.bind(this);
 
 
@@ -496,10 +500,15 @@ var ViewModel = function() {
         .sidebar('is visible') ? 'Show Locations' : 'Hide Sidebar');
   }.bind(this);
 
+  this.reset = function() {
+    map.setCenter({lat: 30.275, lng: -97.732});
+    if(this.currentMarker) {
+      this.infoWindow.close();
+      this.currentMarker(null);
+    }
+  }.bind(this);
+
 }
-
-
-
 
 
 var map;

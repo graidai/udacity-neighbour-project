@@ -29,6 +29,11 @@
   color: #fafafa;
 }
 
+#message-header {
+  background-color: #1A1C1E;
+  color: #fafafa;
+}
+
 #tips-card {
   width: 100%;
 }
