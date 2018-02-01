@@ -8,10 +8,6 @@
     0.5s transform ease;
 }
 
-#sidebsar {
-  background-color: #38013D;
-}
-
 #place-item {
   color: #fafafa;
   text-align: right;
@@ -19,7 +15,7 @@
 
 #expand-btn {
   visibility: hidden;
-  background-color: #EBFF03;
+  background-color: #ebff03;
   margin-left: 1.5rem;
   color: #fafafa;
 }
@@ -31,7 +27,7 @@
 }
 
 #message-header {
-  background-color: #1A1C1E;
+  background-color: #1a1c1e;
   color: #fafafa;
 }
 
