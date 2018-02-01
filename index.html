@@ -32,8 +32,10 @@
           <button class="ui teal right labeled icon button"
             data-bind="click: currentFilteredView().filterBtn"
             data-position="bottom right"
-            data-tooltip= "Click to Filter on Map">
-            <i class="options icon"></i>
+            data-tooltip= "Toggle to filter realtime or on click">
+            <i class="toggle icon off"
+              data-bind="click: filterToggle, clickBubble: false,
+                css: { on: filterStatus(), off: !filterStatus()}"></i>
             Filter
           </button>
       </div>
@@ -104,18 +106,12 @@
 
       <!-- modal table -->
       <table class="ui orange table">
-        <thead>
-          <tr>
-            <th>Business Hour</th>
-            <th data-bind="text: notAvailable"></th>
-            <th></th>
-          </tr>
-        </thead><tbody>
+        <tbody>
           <tr data-bind="foreach: hours">
             <td data-bind="text: days">Apples</td>
           </tr>
           <tr data-bind="foreach: hours">
-            <td data-bind="text: open[0].renderedTime">Orange</td>
+            <td data-bind="text: time">Orange</td>
           </tr>
         </tbody>
       </table>

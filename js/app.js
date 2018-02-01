@@ -301,11 +301,12 @@ var Location = function(data) {
 };
 
 var ModalView = function(marker) {
-  //initail default observables
+  //initial default observables
+  this.marker = ko.observable(marker);
   this.title = ko.observable(marker.title || '');
-  this.address = ko.observableArray([]);
-  this.rating = ko.observable();
-  this.price = ko.observable();
+  this.address = ko.observableArray(['Sorry! No address']);
+  this.rating = ko.observable('0');
+  this.price = ko.observable('N/a');
   this.phone = ko.observable('not available');
   this.notAvailable = ko.observable("Sorry info not available");
   this.photoUrlArray = ko.observableArray([{
@@ -314,7 +315,10 @@ var ModalView = function(marker) {
     'attribution': 'https://pixabay.com/en/nepal-ebc-gokyo-trekking-2565878'
   }]);
   this.tipArray = ko.observableArray(["here's a tip", "try the food first"]);
-  this.hours = ko.observableArray();
+  this.hours = ko.observableArray([{
+    'days': 'No Hours Available',
+    'time': 'No Time Avalilable'
+  }]);
 
   if(marker.placeDetails) {
     this.address(marker.placeDetails.location.formattedAddress);
@@ -328,8 +332,12 @@ var ModalView = function(marker) {
       this.phone(marker.placeDetails.contact.formattedPhone);
     }
     if(marker.placeDetails.hours) {
+      this.hours([]);
       this.notAvailable('');
-      this.hours(marker.placeDetails.hours.timeframes);
+      marker.placeDetails.hours.timeframes.forEach(val => {
+        this.hours.push({'days':val.days, 'time':val.open[0].renderedTime});
+      });
+      // this.hours(marker.placeDetails.hours.timeframes);
     }
     if(marker.placeDetails.photos) {
       var url;
@@ -420,10 +428,12 @@ var ViewModel = function() {
   this.modalView = ko.observable(new ModalView(this.locations()[0].marker));
   this.infoWindow = new google.maps.InfoWindow();
   this.inputTitle = ko.observable();
+  this.filterStatus = ko.observable(false);
   this.currentMarker = ko.observable();
   this.filteredArray = ko.observableArray(this.locations());
   this.sidebarStatus= ko.observable('Show Locations');
   this.currentInfoWindow = ko.observable();
+  this.modalViewList = {'Initial': null};
 
 
   this.filterTitle = function(dataModel, event) {
@@ -443,15 +453,18 @@ var ViewModel = function() {
       if(title.indexOf(filter) > -1){
         // in case you want to filter without clicking the button in real time
         // surprisingly easier than having to put the button implemntation
-        // obj.marker.setMap(map);
+        if(this.filterStatus()) obj.marker.setMap(map);
         this.filteredArray.push(obj);
       } else {
-        // obj.marker.setMap(null);
+        if(this.filterStatus()) obj.marker.setMap(null);
       }
     });
     this.currentFilteredView(new FilterView(this.filteredArray()));
   }.bind(this);
 
+  this.filterToggle = function() {
+    this.filterStatus(!this.filterStatus());
+  }.bind(this);
 
 
   //select location from the list
@@ -471,7 +484,15 @@ var ViewModel = function() {
 
   //semantic ui implementations
   this.showModal = function(data) {
-    this.modalView(new ModalView(data.marker));
+    var markerTitle = data.marker.title;
+    var currentModalView;
+    if (!this.modalViewList[markerTitle]) {
+      currentModalView = new ModalView(data.marker);
+      this.modalViewList[markerTitle] = currentModalView;
+    } else {
+      currentModalView = this.modalViewList[markerTitle];
+    }
+    this.modalView(currentModalView);
     $('.ui.rating').rating('disable');
     $('.ui.modal').modal('show');
     $('.shape').shape();
@@ -480,11 +501,11 @@ var ViewModel = function() {
 
   this.flipNext = function(){
     $('.shape').shape('flip right');
-  }
+  };
 
   this.flipPrevious = function(){
     $('.shape').shape('flip left');
-  }
+  };
 
   this.sidebarToggle = function() {
     $('.chevron').toggleClass('open');
