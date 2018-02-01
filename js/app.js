@@ -511,8 +511,7 @@ var ViewModel = function() {
     $('.chevron').toggleClass('open');
     $("#launch-btn").popup();
     self.sidebarStatus(
-      $("#sidebar")
-        .sidebar('is visible') ? 'Show Locations' : 'Hide Sidebar');
+      $("#sidebar").sidebar('is visible') ? 'Show Locations' : 'Hide Sidebar');
   }.bind(this);
 
   this.reset = function() {

@@ -32,7 +32,7 @@
           <button class="ui teal right labeled icon button"
             data-bind="click: currentFilteredView().filterBtn"
             data-position="bottom right"
-            data-tooltip= "Toggle to filter realtime or on click">
+            data-tooltip= "Toggle filter btn to filter realtime or on click">
             <i class="toggle icon off"
               data-bind="click: filterToggle, clickBubble: false,
                 css: { on: filterStatus(), off: !filterStatus()}"></i>
@@ -61,10 +61,8 @@
 
     <!-- Reset Button -->
     <div class="item">
-      <button class="ui purple button" data-inverted=""
-        data-bind="click: reset"
-        data-position="top center"
-        data-tooltip= "Reset View on Map">
+      <button class="ui purple button" data-bind="click: reset"
+        data-position="top center" data-tooltip= "Reset View on Map">
         Reset
       </button>
     </div>
@@ -146,7 +144,7 @@
         <div class="ten wide column">
           <div class="ui card" id="tips-card">
             <div class="content" id="card-header">
-              <div class="header">Useful Tips</div>
+              <div class="header">Tips and Review</div>
             </div>
             <div class="content" id="card-content">
               <ul class="ui list" data-bind="foreach: tipArray">
