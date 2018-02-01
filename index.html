@@ -4,10 +4,6 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Friendly Neighbour Udacity</title>
-  <!-- <link rel="stylesheet"
-    href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
-    crossorigin="anonymous"> -->
   <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.9/semantic.min.css"/>
   <link rel="stylesheet" type="text/css" href="static/index.css"/>
@@ -31,13 +27,16 @@
         type="text"
         placeholder="Your Barbecue Station"
         data-bind="textInput: inputTitle, event: { keyup: filterTitle }">
-        <button class="ui teal right labeled icon button" data-bind="click: currentFilteredView().filterBtn">
+        <button class="ui teal right labeled icon button"
+          data-bind="click: currentFilteredView().filterBtn"
+          data-position="bottom right"
+          data-tooltip= "Click to Filter on Map">
           <i class="options icon"></i>
           Filter
         </button>
       </div>
     </div>
-    <div data-bind="text: si">sd</div>
+    <!-- <div data-bind="text: si">sd</div> -->
     <div class="item" data-bind="with: currentFilteredView">
       <div class="menu" data-bind="foreach: filteredArray">
         <p class="menu-item"
@@ -57,11 +56,10 @@
 
 </div>
 <div class="ui black big launch right attached fixed button"
-  id="launch-btn"
+  id="launch-btn" data-position="right center"
+  data-inverted=""
   data-bind="click: sidebarToggle ,
-    attr: { 'data-tooltip': sidebarStatus ? 'Hide Sidebar' : 'Show Locations' }"
-  data-position="right center"
-  data-inverted="">
+    attr: { 'data-tooltip': sidebarStatus }">
 <i class="chevron icon right"></i>
 </div>
 
@@ -70,12 +68,12 @@
 </div>
 
 <!-- modal -->
-<div class="ui modal" data-bind="with: modalView" >
+<div class="ui modal" data-bind="with: modalView">
   <i class="close icon"></i>
-  <div class="header" data-bind="text: title" ></div>
+  <div class="header " data-bind="text: title" id="modal-header"></div>
   <div class="content">
     <div class="ui icon message">
-      <i class="inbox icon"></i>
+      <i class="food icon"></i>
       <div class="content" data-bind="foreach: address">
         <div data-bind="text: $data"></div>
       </div>
@@ -90,9 +88,7 @@
     },
     text: rating">
   </span>
-
-
-  <table class="ui red table">
+  <table class="ui orange table">
     <thead>
       <tr>
         <th>Business Hour</th>
@@ -108,7 +104,7 @@
       </tr>
     </tbody>
   </table>
-  <div class="ui grid">
+  <div class="ui stackable grid">
     <div class="six wide column">
       <div class="ui buttons nav-btn">
         <button class="ui button" data-bind="click: $root.flipNext">Previous</button>
@@ -133,10 +129,10 @@
     </div>
     <div class="ten wide column">
       <div class="ui card" id="tips-card">
-        <div class="content">
+        <div class="content" id="card-header">
           <div class="header">Useful Tips</div>
         </div>
-        <div class="content">
+        <div class="content" id="card-content">
           <ul class="ui list" data-bind="foreach: tipArray">
             <li data-bind="text:$data"></li>
           </ul>

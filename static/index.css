@@ -8,6 +8,10 @@
     0.5s transform ease;
 }
 
+#sidebsar {
+  background-color: #38013D;
+}
+
 #place-item {
   color: #fafafa;
   text-align: right;
@@ -20,8 +24,22 @@
   color: #fafafa;
 }
 
+#modal-header {
+  background-color: #650d6d;
+  color: #fafafa;
+}
+
 #tips-card {
   width: 100%;
+}
+
+#card-header {
+  background-color: #5bb188;
+}
+
+#card-content {
+  background-color: #74d6a7;
+  min-height: 170px;
 }
 
 .chevron.open {
@@ -45,6 +63,7 @@
 
 .menu-item:hover {
   background-color: #2f2b2b;
+  /* background-color: #610869; */
   cursor: cell;
 }
 

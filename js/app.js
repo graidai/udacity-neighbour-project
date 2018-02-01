@@ -136,8 +136,6 @@ var initiateSidebar = function(){$("#sidebar")
   .sidebar('attach events','#launch-btn')
 }
 
-$('#launch-btn').popup({on: 'focus'});
-
 
 function getPlacesDetails(marker, detailFunc, infoWindow) {
   var innerHTML = '';
@@ -314,7 +312,7 @@ var ModalView = function(marker) {
     'caption': 'Go Visit Nepal',
     'attribution': 'https://pixabay.com/en/nepal-ebc-gokyo-trekking-2565878'
   }]);
-  this.tipArray = ko.observableArray(["here's a tip, try the food first"]);
+  this.tipArray = ko.observableArray(["here's a tip", "try the food first"]);
   this.hours = ko.observableArray();
 
   if(marker.placeDetails) {
@@ -427,16 +425,11 @@ var ViewModel = function() {
   this.inputTitle = ko.observable();
   this.currentMarker = ko.observable();
   this.filteredArray = ko.observableArray(this.locations());
-  this.sidebarStatus = ko.observable(false);
-  this.si= ko.observable('df')
+  this.sidebarStatus= ko.observable('Show Locations');
+
+
 
   this.filterTitle = function(dataModel, event) {
-
-    this.si = ko.computed(function() {
-      return $('#sidebar').sidebar('is visible')
-    });
-
-
     this.filteredArray([]);
     var filter
     var data = dataModel.locations();
@@ -497,10 +490,16 @@ var ViewModel = function() {
 
   this.sidebarToggle = function() {
     $('.chevron').toggleClass('open');
-
+    $("#launch-btn").popup();
+    self.sidebarStatus(
+      $("#sidebar")
+        .sidebar('is visible') ? 'Show Locations' : 'Hide Sidebar');
   }.bind(this);
 
 }
+
+
+
 
 
 var map;
