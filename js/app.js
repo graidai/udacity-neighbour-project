@@ -128,12 +128,13 @@ var initLocations = [
 ];
 
 
-var initiateSidebar = function(){$("#sidebar")
-  .sidebar({
-    dimPage: false,
-    closable: false,
-  })
-  .sidebar('attach events','#launch-btn')
+var initiateSidebar = function() {
+  $("#sidebar")
+    .sidebar({
+      dimPage: false,
+      closable: false,
+    })
+    .sidebar('attach events','#launch-btn');
 }
 
 
@@ -149,9 +150,9 @@ function getPlacesDetails(marker, detailFunc, infoWindow) {
       url: 'https://api.foursquare.com/v2/venues/' + marker.idFourSqr + '?'
       + '&client_id=55GRDDIO4M4MSANZAEVW3YOIBGYHHIO5KLNVJALFQ5MOFR4G&client'
       + '_secret=IGWG0OXVMSZGVULL12DSBCKXA50FQV5PDO2NASVMTFBLW54B&v=20180128',
-      success: function(result, status){
+      success: function(result, status) {
         if(result.meta.errorDetail){
-          console.log(result.meta.errorDetail)
+          console.log(result.meta.errorDetail);
           if (!infoWindow) {
             alert('No info available. Try again later');
             return;
@@ -173,7 +174,7 @@ function getPlacesDetails(marker, detailFunc, infoWindow) {
       }
     });
   } else {
-    if(!infoWindow) return;
+    if (!infoWindow) return;
     var venue = marker.placeDetails;
     innerContent(venue);
   }
@@ -183,28 +184,23 @@ function getPlacesDetails(marker, detailFunc, infoWindow) {
     innerHTML = '<div>';
     innerHTML += '<strong>' + marker.title + '</strong>';
     if (venue.location.formattedAddress) {
-      innerHTML += '<br><br><p>'
-      + venue.location.formattedAddress.join(',<br>');
+      innerHTML += '<br><br><p>' + venue.location.formattedAddress.join(',<br>');
     }
     if (venue.contact.formattedPhone) {
-      innerHTML += '<br>'
-      + venue.contact.formattedPhone;
+      innerHTML += '<br>' + venue.contact.formattedPhone;
     }
     if (venue.rating) {
-      innerHTML += '<br><br>Rating: '
-      + venue.rating;
+      innerHTML += '<br><br>Rating: ' + venue.rating;
     }
     if (venue.price) {
-      innerHTML += ', Price: '
-      + venue.price.currency;
+      innerHTML += ', Price: ' + venue.price.currency;
     }
     if (venue.bestPhoto) {
-      innerHTML += '<br><img src="'
-      + venue.bestPhoto.prefix
-      + '200x100' + venue.bestPhoto.suffix +'">';
+      innerHTML += '<br><img src="' + venue.bestPhoto.prefix + '200x100' +
+        venue.bestPhoto.suffix +'">';
     }
 
-    innerHTML += '</p></div>'
+    innerHTML += '</p></div>';
     infoWindow.setContent(innerHTML);
     infoWindow.open(map, marker);
   }
@@ -221,16 +217,16 @@ function makeMarkerIcon(marker, iconType) {
   var url = '';
   switch(iconType) {
     case 'black':
-    url = 'static/chickenBlack.png'
-    break;
+      url = 'static/chickenBlack.png';
+      break;
     case 'blue':
-    url = 'static/chickenBlue.png'
-    break;
+      url = 'static/chickenBlue.png';
+      break;
     case 'default':
-    url = 'static/chickenDefault.png'
-    break;
+      url = 'static/chickenDefault.png';
+      break;
     default:
-    url = 'static/chickenDefault.png'
+      url = 'static/chickenDefault.png';
   }
   var icon = {
     url: url,
@@ -247,10 +243,10 @@ function searchIdFourSqr(data, callback) {
     type: "GET",
     dataType: "jsonp",
     cache: false,
-    url: 'https://api.foursquare.com/v2/venues/search?ll=' + data.location.lat
-    + ','+ data.location.lng +'&name=' + data.title + '&limit=30&intent=mat'
-    + 'ch&client_id=55GRDDIO4M4MSANZAEVW3YOIBGYHHIO5KLNVJALFQ5MOFR4G&client'
-    + '_secret=IGWG0OXVMSZGVULL12DSBCKXA50FQV5PDO2NASVMTFBLW54B&v=20170801',
+    url: 'https://api.foursquare.com/v2/venues/search?ll=' + data.location.lat +
+      ',' + data.location.lng +'&name=' + data.title + '&limit=30&intent=mat' +
+      'ch&client_id=55GRDDIO4M4MSANZAEVW3YOIBGYHHIO5KLNVJALFQ5MOFR4G&client' +
+      '_secret=IGWG0OXVMSZGVULL12DSBCKXA50FQV5PDO2NASVMTFBLW54B&v=20170801',
     success: function(data){
       if(data.meta.code == 200){
         callback(data.response.venues[0]);
@@ -265,12 +261,15 @@ function selectMarker(marker, markers, infoWindow) {
   function setPlaceDetails(placeDetails) {
     marker['placeDetails'] = placeDetails;
   }
+  // if just hovering the sidebar, async placedetails and save in marker object
+  // if the marker object already has placeDetails key, network call is not made
+  // in getPlacesDetails()
   if(!infoWindow){
     getPlacesDetails(marker, setPlaceDetails);
     return;
   }
   getPlacesDetails(marker, setPlaceDetails, infoWindow);
-  //change previous markers color
+  //change other markers color to default
   markers.forEach(obj =>{
     makeMarkerIcon(obj.marker, 'default');
   })
@@ -278,8 +277,6 @@ function selectMarker(marker, markers, infoWindow) {
   marker['currentColor'] = 'black';
   animateMarker(marker);
 }
-
-
 
 var Location = function(data) {
   var self = this;
@@ -297,11 +294,11 @@ var Location = function(data) {
     map: map,
     icon: icon
   });
-  //async call find the id of the given location
+  //async call to Foursqure API to find the id of the given location
   searchIdFourSqr(data, function(idx){
     self.marker['idFourSqr'] = idx.id;
   });
-}
+};
 
 var ModalView = function(marker) {
   //initail default observables
@@ -336,7 +333,7 @@ var ModalView = function(marker) {
     }
     if(marker.placeDetails.photos) {
       var url;
-      var caption
+      var caption;
       this.photoUrlArray([]);
       var items = marker.placeDetails.photos.groups[0].items;
       items.forEach((item, idx) => {
@@ -348,13 +345,13 @@ var ModalView = function(marker) {
     if(marker.placeDetails.tips.groups[0].items[0]) {
       var tips = marker.placeDetails.tips.groups[0].items;
       this.tipArray([]);
-      //get ten tips
+      //get five tips from the tips data
       for(var i=0; i < 5; i++) {
         this.tipArray.push(tips[i].text);
       }
     }
   }
-}
+};
 
 
 var FilterView = function(locations) {
@@ -362,13 +359,12 @@ var FilterView = function(locations) {
   this.btnVisibility = ko.observable(null);
   this.currMarker = ko.observable();
 
-
   this.filterBtn = function(dataModel) {
     // remove all markers first, then display the markers on the filter list
     dataModel.locations().forEach(obj => {
       obj.marker.setMap(null);
     })
-    locations.forEach(location => {
+    this.filteredArray().forEach(location => {
       location.marker.setMap(map);
     })
   }.bind(this);
@@ -381,15 +377,14 @@ var FilterView = function(locations) {
     selectMarker(data.marker);
     // make show detail button visible just for the highlighted element
     childElement.style.visibility = 'visible';
-  }.bind(this)
+  }.bind(this);
   this.changeMarkertoDefault = function(childElement, viewModel, data, event) {
     if(viewModel.currentMarker() != data.marker){
       makeMarkerIcon(data.marker, 'default');
     }
     childElement.style.visibility = 'hidden';
   }.bind(this);
-
-}
+};
 
 
 
@@ -429,7 +424,6 @@ var ViewModel = function() {
   this.filteredArray = ko.observableArray(this.locations());
   this.sidebarStatus= ko.observable('Show Locations');
   this.currentInfoWindow = ko.observable();
-
 
 
   this.filterTitle = function(dataModel, event) {
@@ -507,7 +501,6 @@ var ViewModel = function() {
       this.currentMarker(null);
     }
   }.bind(this);
-
 }
 
 
