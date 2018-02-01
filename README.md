@@ -2,7 +2,7 @@
 
 A Udacity project to map Barbecue Places in Austin.This single page application follows the MVVM design pattern using Knockout.
 
-Preface - If your are new to Austin, you might wanna find out about the different BBQ places in Austin. The Breakfast Taco war with San Antonio has been long and shows no sign of finding a victor anytime soon. However when it comes to BBQ, the winner is unanimous (but within the state lines only).
+Preface - If your are new to Austin, you might wanna find out about the different BBQ places in Austin. The Breakfast Taco war with San Antonio has been long and shows no sign of finding a victor anytime soon. However when it comes to BBQ, the winner is unanimous (ie. within the state lines).
 
 
 ## Dependencies
