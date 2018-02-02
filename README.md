@@ -7,9 +7,7 @@ Preface - If your are new to Austin, you might wanna find out about the differen
 
 ## Dependencies
 To run the web app simply:
-
 1 - clone the repo
-
 2 - on your command line, run bower install
     (if you don't have bower, install it from https://bower.io/#getting-started)
 
@@ -26,7 +24,8 @@ The side bar has following components:
   3 - List of the locations
   4 - Reset Button
 
-1. Filter Input Field: User can type on the input field to filter the location displaying on the map. Typing the location name will filter both names on the list and the markers on the map [by default]. User has the option to make the filtering work only when only clicking on the filter button.
-2. Filter Button: Clicking on the filter button filters the locations on the list to match the markers on the map. However, if the user wishes to filter both the locations and markers as the user types on the input field, the user has to toggle the button next to the filter button on the right. The Realtime display toggle button.
-3. List of the locations: Displays the locations available. User can click on the individual location to display the information of the location on the map. When hovering on a locations, a yellow expand button appears. On clicking the expand button, the user will be able to see more detail information of the location on modal display.
+1. Filter Input Field: User can type on the input field to filter the location displaying on the map. Typing the location name will filter both names on the list and the markers on the map [by default] ![](https://github.com/graidai/udacity-neighbour-project/blob/master/static/filterToggleOff.png). User has the option to make the filtering work only when only clicking on the filter button.
+2. Filter Button: Clicking on the filter button filters the locations on the list to match the markers on the map. However, if the user wishes to filter both the locations and markers as the user types on the input field, the user has to toggle the button next to the filter button on the right ![](https://github.com/graidai/udacity-neighbour-project/blob/master/static/filterToggleOn.png). The Realtime display toggle button.
+3. List of the locations: Displays the locations available. User can click on the individual location to display the information of the location on the map. When hovering on a locations, a yellow expand button ![](https://github.com/graidai/udacity-neighbour-project/blob/master/static/yellowBtn.png) appears. On clicking the expand button ![](https://github.com/graidai/udacity-neighbour-project/blob/master/static/yellowBtn.png), the user will be able to see more detail information of the location on modal display.
+![](https://github.com/graidai/udacity-neighbour-project/blob/master/static/modal.png)
 4. Reset Button: Resets the view of the map to the original location.
