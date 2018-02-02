@@ -78,7 +78,17 @@
   </div>
 
   <!-- main map canvas -->
+
   <div class="pusher" id="map"></div>
+  <div class="ui black message" id="mgbox" data-bind="css: {mgbox: errorAlert}">
+    <i class="close icon" data-bind="click: closeMessage"></i>
+    <div class="header">
+      Sorry Network Error!! &nbsp&nbsp
+    </div>
+    <br>
+    <div>Following Error Occured:</div>
+    <div data-bind="text: errorMessage">That offer has expired</div>
+  </div>
 
   <!-- modal -->
   <div class="ui modal" data-bind="with: modalView">
@@ -166,7 +176,9 @@
   </script>
   <script src="js/app.js"></script>
   <script async defer
+    onerror="mapError()"
     src="https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyAXeLDsV2v8YP_G_Kos4erYBBNeFMPyX4I&callback=initMap">
   </script>
+
 </body>
 </html>

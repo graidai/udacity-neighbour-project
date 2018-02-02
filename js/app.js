@@ -249,7 +249,7 @@ function makeMarkerIcon(marker, iconType) {
   marker.setIcon(icon);
 }
 
-function searchIdFourSqr(data, callback) {
+function searchIdFourSqr(data, callback, errorCallback) {
   $.ajax({
     type: "GET",
     dataType: "jsonp",
@@ -258,11 +258,17 @@ function searchIdFourSqr(data, callback) {
       ',' + data.location.lng +'&name=' + data.title + '&limit=30&intent=mat' +
       'ch&client_id=55GRDDIO4M4MSANZAEVW3YOIBGYHHIO5KLNVJALFQ5MOFR4G&client' +
       '_secret=IGWG0OXVMSZGVULL12DSBCKXA50FQV5PDO2NASVMTFBLW54B&v=20170801',
+    error: function(request, status, error) {
+      errorCallback(error);
+      console.log(error);
+    },
     success: function(data){
       if(data.meta.code == 200){
         callback(data.response.venues[0]);
-      } else {
-        callback('');
+      } else if (data.meta.code == 400) {
+        console.log(data.meta);
+        errorCallback(data.meta.errorType);
+        return;
       }
     }
   });
@@ -289,7 +295,7 @@ function selectMarker(marker, markers, infoWindow) {
   animateMarker(marker);
 }
 
-var Location = function(data) {
+var Location = function(data, ctx) {
   var self = this;
   var icon = {
     url: 'static/chickenDefault.png',
@@ -308,7 +314,13 @@ var Location = function(data) {
   //async call to Foursqure API to find the id of the given location
   searchIdFourSqr(data, function(idx){
     self.marker.idFourSqr = idx.id;
-  });
+  }, onError);
+
+  function onError(error) {
+    console.log(error);
+    ctx.errorAlert(true);
+    ctx.errorMessage(error);
+  }
 };
 
 var ModalView = function(marker) {
@@ -413,7 +425,7 @@ var ViewModel = function() {
   var self = this;
 
   this.locations = ko.observableArray(initLocations.map(location => {
-    return new Location(location);
+    return new Location(location, self);
   }));
 
   //add event listener for the each markers on the map
@@ -444,6 +456,8 @@ var ViewModel = function() {
   this.sidebarStatus= ko.observable('Show Locations');
   this.currentInfoWindow = ko.observable();
   this.modalViewList = {'Initial': null};
+  this.errorAlert = ko.observable(false);
+  this.errorMessage = ko.observable(false);
 
 
   this.filterTitle = function(dataModel, event) {
@@ -531,6 +545,11 @@ var ViewModel = function() {
       this.currentMarker(null);
     }
   }.bind(this);
+
+  this.closeMessage = function() {
+    this.errorAlert(false);
+  }.bind(this);
+
 };
 
 
@@ -543,3 +562,13 @@ function initMap() {
   var viewModel = new ViewModel();
   ko.applyBindings(viewModel);
 }
+
+function mapError() {
+  alert('Sorry! The Map could not load');
+}
+
+var onerror = function (msg) {
+  console.log(msg);
+  alert('Error: ' + msg);
+  return false;
+};

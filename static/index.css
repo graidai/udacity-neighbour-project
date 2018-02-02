@@ -44,6 +44,20 @@
   min-height: 170px;
 }
 
+.mgbox {
+  position: fixed !important;
+  top: 10% !important;
+  left: 50% !important;
+  z-index: 99 !important;
+  /* bring your own prefixes */
+  transform: translate(-50%, -50%) !important;
+}
+
+.msgbox {
+
+
+}
+
 .chevron.open {
   -webkit-transform: rotate(-180deg);
   -moz-transform: rotate(-180deg);
