@@ -11,12 +11,11 @@ To run the web app simply:
 1 - clone the repo
 
 2 - on your command line, run-> bower install
-    (if you don't have bower, install it from https://bower.io/#getting-started)
+    (if you don't have bower, install it from [bower](https://bower.io/#getting-started))
 
-3 - from the project folder terminal to setup a server, run-> python -m http.server 8000, - (for Python 3.xx)
-  for more help, see [link](https://developer.mozilla.org/en-US/docs/Learn/Common_questions/set_up_a_local_testing_server)
+3 - go to the project folder in your terminal, run-> python -m http.server 8000 (for Python 3.xx), for more help, see [link](https://developer.mozilla.org/en-US/docs/Learn/Common_questions/set_up_a_local_testing_server)
 
-4 - in your browser, put on address for localhost:8000
+4 - navigate to localhost:8000 from any browser
 
 There are only 2 dependencies for the app to run - Knockout and jQuery. The application uses Google Map APIs and Foursquare APIs to fetch the information of the specified locations. All network calls are made asynchronously.
 
