@@ -135,7 +135,7 @@ var initiateSidebar = function() {
       closable: false,
     })
     .sidebar('attach events','#launch-btn');
-}
+};
 
 
 function getPlacesDetails(marker, detailFunc, infoWindow) {
@@ -147,16 +147,16 @@ function getPlacesDetails(marker, detailFunc, infoWindow) {
       type: "GET",
       dataType: "jsonp",
       cache: false,
-      url: 'https://api.foursquare.com/v2/venues/' + marker.idFourSqr + '?'
-      + '&client_id=55GRDDIO4M4MSANZAEVW3YOIBGYHHIO5KLNVJALFQ5MOFR4G&client'
-      + '_secret=IGWG0OXVMSZGVULL12DSBCKXA50FQV5PDO2NASVMTFBLW54B&v=20180128',
+      url: 'https://api.foursquare.com/v2/venues/' + marker.idFourSqr + '?' +
+      	'&client_id=55GRDDIO4M4MSANZAEVW3YOIBGYHHIO5KLNVJALFQ5MOFR4G&client' +
+      	'_secret=IGWG0OXVMSZGVULL12DSBCKXA50FQV5PDO2NASVMTFBLW54B&v=20180128',
       success: function(result, status) {
         if(result.meta.errorDetail){
           console.log(result.meta.errorDetail);
           if (!infoWindow) {
             alert('No info available. Try again later');
             return;
-          };
+          }
           infoWindow.setContent('OOPS!! No Info Available');
           infoWindow.open(map, marker);
           return;
@@ -234,7 +234,7 @@ function makeMarkerIcon(marker, iconType) {
     origin: new google.maps.Point(0, 0),
     anchor: new google.maps.Point(0, 32),
     scale: 10
-  }
+  };
   marker.setIcon(icon);
 }
 
@@ -259,7 +259,7 @@ function searchIdFourSqr(data, callback) {
 
 function selectMarker(marker, markers, infoWindow) {
   function setPlaceDetails(placeDetails) {
-    marker['placeDetails'] = placeDetails;
+    marker.placeDetails = placeDetails;
   }
   // if just hovering the sidebar, async placedetails and save in marker object
   // if the marker object already has placeDetails key, network call is not made
@@ -270,11 +270,11 @@ function selectMarker(marker, markers, infoWindow) {
   }
   getPlacesDetails(marker, setPlaceDetails, infoWindow);
   //change other markers color to default
-  markers.forEach(obj =>{
+  markers.forEach(obj => {
     makeMarkerIcon(obj.marker, 'default');
-  })
+  });
   makeMarkerIcon(marker, 'black');
-  marker['currentColor'] = 'black';
+
   animateMarker(marker);
 }
 
@@ -296,7 +296,7 @@ var Location = function(data) {
   });
   //async call to Foursqure API to find the id of the given location
   searchIdFourSqr(data, function(idx){
-    self.marker['idFourSqr'] = idx.id;
+    self.marker.idFourSqr = idx.id;
   });
 };
 
@@ -348,7 +348,7 @@ var ModalView = function(marker) {
         url = item.prefix + '500x300' + item.suffix;
         caption = item.user.firstName;
         this.photoUrlArray.push({'url': url, 'caption': caption});
-      })
+      });
     }
     if(marker.placeDetails.tips.groups[0].items[0]) {
       var tips = marker.placeDetails.tips.groups[0].items;
@@ -371,10 +371,10 @@ var FilterView = function(locations) {
     // remove all markers first, then display the markers on the filter list
     dataModel.locations().forEach(obj => {
       obj.marker.setMap(null);
-    })
+    });
     this.filteredArray().forEach(location => {
       location.marker.setMap(map);
-    })
+    });
   }.bind(this);
 
   //mouse hover on locations list
@@ -406,7 +406,6 @@ var ViewModel = function() {
   }));
 
   //add event listener for the each markers on the map
-  var self = this;
   this.locations().forEach(location => {
     location.marker.addListener('click', function() {
       self.selectMarkerOnMap(this);
@@ -438,7 +437,7 @@ var ViewModel = function() {
 
   this.filterTitle = function(dataModel, event) {
     this.filteredArray([]);
-    var filter
+    var filter;
     var data = dataModel.locations();
     var input = dataModel.inputTitle();
     //check for empty backspace in input field
@@ -447,7 +446,7 @@ var ViewModel = function() {
     data.forEach(obj => {
       var title = obj.marker.title.toUpperCase();
       //if input field empty, display all markers
-      if(filter==''){
+      if(filter===''){
         obj.marker.setMap(map);
       }
       if(title.indexOf(filter) > -1){
@@ -521,7 +520,7 @@ var ViewModel = function() {
       this.currentMarker(null);
     }
   }.bind(this);
-}
+};
 
 
 var map;
