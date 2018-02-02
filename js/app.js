@@ -150,14 +150,25 @@ function getPlacesDetails(marker, detailFunc, infoWindow) {
       url: 'https://api.foursquare.com/v2/venues/' + marker.idFourSqr + '?' +
       	'&client_id=55GRDDIO4M4MSANZAEVW3YOIBGYHHIO5KLNVJALFQ5MOFR4G&client' +
       	'_secret=IGWG0OXVMSZGVULL12DSBCKXA50FQV5PDO2NASVMTFBLW54B&v=20180128',
+      error: function(request, status, error) {
+        if(infoWindow) {
+          infoWindow.setContent('OOPS!! <br>Error:<br><strong>' +
+            error + '</strong> error' + ' <br>Please try again later');
+          infoWindow.open(map, marker);
+        } else {
+          alert('Sorry No Info Available\nError: ' + error);
+        }
+        console.log(status);
+      },
       success: function(result, status) {
         if(result.meta.errorDetail){
-          console.log(result.meta.errorDetail);
+          console.log(result.meta);
           if (!infoWindow) {
-            alert('No info available. Try again later');
             return;
           }
-          infoWindow.setContent('OOPS!! No Info Available');
+          infoWindow.setContent('<p>OOPS!! No Info Available</p><strong>' +
+            result.meta.code + ' error<br>Error Type: ' + result.meta.errorType +
+            '</strong>' + '<br>Please try again later');
           infoWindow.open(map, marker);
           return;
         }
@@ -210,7 +221,7 @@ function animateMarker(marker) {
   marker.setAnimation(google.maps.Animation.BOUNCE);
   setTimeout(function () {
     marker.setAnimation(null);
-  }, 1420);
+  }, 1400);
 }
 
 function makeMarkerIcon(marker, iconType) {
@@ -370,10 +381,10 @@ var FilterView = function(locations) {
   this.filterBtn = function(dataModel) {
     // remove all markers first, then display the markers on the filter list
     dataModel.locations().forEach(obj => {
-      obj.marker.setMap(null);
+      obj.marker.setVisible(false);
     });
     this.filteredArray().forEach(location => {
-      location.marker.setMap(map);
+      location.marker.setVisible(true);
     });
   }.bind(this);
 
@@ -427,7 +438,7 @@ var ViewModel = function() {
   this.modalView = ko.observable(new ModalView(this.locations()[0].marker));
   this.infoWindow = new google.maps.InfoWindow();
   this.inputTitle = ko.observable();
-  this.filterStatus = ko.observable(false);
+  this.filterStatus = ko.observable(true);
   this.currentMarker = ko.observable();
   this.filteredArray = ko.observableArray(this.locations());
   this.sidebarStatus= ko.observable('Show Locations');
@@ -447,15 +458,15 @@ var ViewModel = function() {
       var title = obj.marker.title.toUpperCase();
       //if input field empty, display all markers
       if(filter===''){
-        obj.marker.setMap(map);
+        obj.marker.setVisible(true);
       }
       if(title.indexOf(filter) > -1){
         // in case you want to filter without clicking the button in real time
         // surprisingly easier than having to put the button implemntation
-        if(this.filterStatus()) obj.marker.setMap(map);
+        if(this.filterStatus()) obj.marker.setVisible(true);
         this.filteredArray.push(obj);
       } else {
-        if(this.filterStatus()) obj.marker.setMap(null);
+        if(this.filterStatus()) obj.marker.setVisible(false);
       }
     });
     this.currentFilteredView(new FilterView(this.filteredArray()));
